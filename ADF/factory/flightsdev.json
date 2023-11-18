@@ -1,0 +1,9 @@
+{
+	"name": "flightsdev",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "029c5294-d984-4ff0-a748-68b92a9ee195",
+		"tenantId": "cafb6eb2-a7bc-456f-b5a2-dac8f347a291"
+	}
+}
