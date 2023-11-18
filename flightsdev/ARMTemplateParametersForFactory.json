@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "flightsdev"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=nihar09.database.windows.net;Initial Catalog=flightsdatabase;User ID=nihar09"
+		},
+		"AzureDataLakeStorage_sink_properties_typeProperties_url": {
+			"value": "https://flightsadlssink.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage_sink_properties_typeProperties_tenant": {
+			"value": "cafb6eb2-a7bc-456f-b5a2-dac8f347a291"
+		},
+		"AzureDataLakeStorage_sink_properties_typeProperties_servicePrincipalId": {
+			"value": "f41346eb-0bec-4c2e-9cfa-33411dc08e36"
+		},
+		"AzureDataLakeStorage_source_properties_typeProperties_url": {
+			"value": "https://flightsadls.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage_source_properties_typeProperties_tenant": {
+			"value": "cafb6eb2-a7bc-456f-b5a2-dac8f347a291"
+		},
+		"AzureDataLakeStorage_source_properties_typeProperties_servicePrincipalId": {
+			"value": "f41346eb-0bec-4c2e-9cfa-33411dc08e36"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://flightskey.vault.azure.net/"
+		},
+		"RestService_source_properties_typeProperties_url": {
+			"value": "https://airlabs.co/api/v9/airlines"
+		}
+	}
+}
