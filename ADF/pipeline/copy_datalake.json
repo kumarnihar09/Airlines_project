@@ -123,7 +123,7 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"container": {
-														"value": "@item().container_source",
+														"value": "@item().container_sink",
 														"type": "Expression"
 													},
 													"directory": {
