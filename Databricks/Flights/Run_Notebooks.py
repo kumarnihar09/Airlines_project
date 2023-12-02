@@ -26,6 +26,7 @@ Notebook_Path_Json = {
             "/Flights/Mart/Dim_Cancellation",
             "/Flights/Mart/Reporting_Flight",
         ],
+        "Data_Quality_Mart": ["/Flights/Data_Quality/Execute_Mart_Data_Quality"]
     }
 
 # COMMAND ----------
