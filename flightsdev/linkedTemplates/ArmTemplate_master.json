@@ -17,6 +17,10 @@
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase_sink'",
 			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=nihar09.database.windows.net;Initial Catalog=flightsdatabase_sink;User ID=nihar09"
 		},
+		"AzureBlobStorage_source_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "blob-source-connection"
+		},
 		"AzureDataLakeStorage_sink_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://flightsadlssink.dfs.core.windows.net/"
@@ -87,6 +91,9 @@
 					},
 					"RestService_source_properties_typeProperties_url": {
 						"value": "[parameters('RestService_source_properties_typeProperties_url')]"
+					},
+					"AzureBlobStorage_source_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureBlobStorage_source_properties_typeProperties_connectionString_secretName')]"
 					},
 					"AzureDataLakeStorage_sink_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage_sink_properties_typeProperties_url')]"

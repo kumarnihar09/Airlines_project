@@ -13,6 +13,144 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Json_source_info')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage_sink",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					},
+					"container": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().container",
+							"type": "Expression"
+						}
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage_sink",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@item().filename_sink",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat(split(item().filename_sink,'.')[0],'/Date-Part=',formatDateTime(utcnow(),'yyyy-MM-dd'))",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Email_send')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"dataset": {
+								"referenceName": "Email_excel",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-20.centralindia.logic.azure.com:443/workflows/b72a4bb69c754675a8e576fe3ae1791b/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Ujm-bXLD_7IdXyPysWK_noRI-r-2d5B_PSP26qLhNbc",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "@activity('Lookup1').output.value",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/copy_datalake')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -255,7 +393,9 @@
 				"annotations": [],
 				"lastPublishTime": "2023-11-18T05:22:46Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Json_source_info')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/copy_restapi_data')]",
@@ -369,7 +509,9 @@
 				"annotations": [],
 				"lastPublishTime": "2023-11-18T05:22:46Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Json_source_info')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/copy_sql_tables')]",
@@ -497,7 +639,10 @@
 				"annotations": [],
 				"lastPublishTime": "2023-11-18T05:22:46Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Json_source_info')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_sink')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/publish_tables')]",
@@ -630,7 +775,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Json_source_info')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Master_pipeline')]",
@@ -754,6 +901,48 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "publish_tables",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ForEach1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "publish_tables",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Email_send",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "publish_tables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Email_send",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"policy": {
@@ -775,7 +964,9 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/copy_datalake')]",
 				"[concat(variables('factoryId'), '/pipelines/copy_restapi_data')]",
-				"[concat(variables('factoryId'), '/pipelines/copy_sql_tables')]"
+				"[concat(variables('factoryId'), '/pipelines/copy_sql_tables')]",
+				"[concat(variables('factoryId'), '/pipelines/publish_tables')]",
+				"[concat(variables('factoryId'), '/pipelines/Email_send')]"
 			]
 		}
 	]

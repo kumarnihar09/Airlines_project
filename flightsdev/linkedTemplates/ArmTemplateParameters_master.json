@@ -11,6 +11,9 @@
 		"AzureSqlDatabase_sink_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=nihar09.database.windows.net;Initial Catalog=flightsdatabase_sink;User ID=nihar09"
 		},
+		"AzureBlobStorage_source_properties_typeProperties_connectionString_secretName": {
+			"value": "blob-source-connection"
+		},
 		"AzureDataLakeStorage_sink_properties_typeProperties_url": {
 			"value": "https://flightsadlssink.dfs.core.windows.net/"
 		},
