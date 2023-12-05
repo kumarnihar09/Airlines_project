@@ -42,7 +42,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Lookup_sql_tables",
+						"activity": "Filter1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -51,7 +51,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup_sql_tables').output.value",
+						"value": "@activity('Filter1').output.value",
 						"type": "Expression"
 					},
 					"activities": [
@@ -113,8 +113,37 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Filter1",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Lookup_sql_tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup_sql_tables').output.value",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@if(equals(length(pipeline().parameters.tablename),0),not(equals(pipeline().parameters.tablename,item().tablename_source)),contains(pipeline().parameters.tablename,item().tablename_source))",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"parameters": {
+			"tablename": {
+				"type": "array",
+				"defaultValue": []
+			}
+		},
 		"annotations": [],
 		"lastPublishTime": "2023-11-18T05:22:46Z"
 	},
