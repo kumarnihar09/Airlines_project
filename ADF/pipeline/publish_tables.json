@@ -76,14 +76,18 @@
 									}
 								},
 								"sink": {
-									"type": "AzureSqlSink",
-									"writeBehavior": "insert",
-									"sqlWriterUseTableLock": false
+									"type": "SqlDWSink",
+									"allowPolyBase": true,
+									"polyBaseSettings": {
+										"rejectValue": 0,
+										"rejectType": "value",
+										"useTypeDefault": true
+									}
 								},
 								"enableStaging": true,
 								"stagingSettings": {
 									"linkedServiceName": {
-										"referenceName": "AzureDataLakeStorage_sink",
+										"referenceName": "linkedService_staging",
 										"type": "LinkedServiceReference"
 									},
 									"path": "manual"
@@ -107,11 +111,11 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "AzureSqlTable_publish",
+									"referenceName": "AzureSynapseAnalyticsTable_publish",
 									"type": "DatasetReference",
 									"parameters": {
-										"table_name": {
-											"value": "@item().publish_tablename",
+										"tablename": {
+											"value": "@item().tablename",
 											"type": "Expression"
 										}
 									}
