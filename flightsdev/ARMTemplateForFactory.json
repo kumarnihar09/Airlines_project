@@ -17,6 +17,15 @@
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase_sink'",
 			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=nihar09.database.windows.net;Initial Catalog=flightsdatabase_sink;User ID=nihar09"
 		},
+		"AzureSynapseAnalytics_sink_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSynapseAnalytics_sink'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=nihar09.database.windows.net;Initial Catalog=flightsdw;User ID=nihar09"
+		},
+		"linkedService_staging_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'linkedService_staging'"
+		},
 		"AzureBlobStorage_source_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
 			"defaultValue": "blob-source-connection"
@@ -52,6 +61,10 @@
 		"RestService_source_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://airlabs.co/api/v9/airlines"
+		},
+		"linkedService_staging_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://flightsadlssink.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -828,7 +841,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Lookup_sql_tables",
+								"activity": "Filter1",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -837,7 +850,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Lookup_sql_tables').output.value",
+								"value": "@activity('Filter1').output.value",
 								"type": "Expression"
 							},
 							"activities": [
@@ -900,10 +913,39 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "Filter1",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Lookup_sql_tables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup_sql_tables').output.value",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@if(equals(length(pipeline().parameters.tablename),0),not(equals(pipeline().parameters.tablename,item().tablename_source)),contains(pipeline().parameters.tablename,item().tablename_source))",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"tablename": {
+						"type": "array",
+						"defaultValue": []
+					}
 				},
 				"annotations": [],
 				"lastPublishTime": "2023-11-18T05:22:46Z"
@@ -994,14 +1036,18 @@
 											}
 										},
 										"sink": {
-											"type": "AzureSqlSink",
-											"writeBehavior": "insert",
-											"sqlWriterUseTableLock": false
+											"type": "SqlDWSink",
+											"allowPolyBase": true,
+											"polyBaseSettings": {
+												"rejectValue": 0,
+												"rejectType": "value",
+												"useTypeDefault": true
+											}
 										},
 										"enableStaging": true,
 										"stagingSettings": {
 											"linkedServiceName": {
-												"referenceName": "AzureDataLakeStorage_sink",
+												"referenceName": "linkedService_staging",
 												"type": "LinkedServiceReference"
 											},
 											"path": "manual"
@@ -1025,11 +1071,11 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "AzureSqlTable_publish",
+											"referenceName": "AzureSynapseAnalyticsTable_publish",
 											"type": "DatasetReference",
 											"parameters": {
-												"table_name": {
-													"value": "@item().publish_tablename",
+												"tablename": {
+													"value": "@item().tablename",
 													"type": "Expression"
 												}
 											}
@@ -1048,8 +1094,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Json_source_info')]",
 				"[concat(variables('factoryId'), '/datasets/AzureDatabricksDeltaLakeDataset_source')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTable_publish')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage_sink')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSynapseAnalyticsTable_publish')]",
+				"[concat(variables('factoryId'), '/linkedServices/linkedService_staging')]"
 			]
 		},
 		{
@@ -1660,6 +1706,75 @@
 					"url": "[parameters('RestService_source_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics_sink')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSynapseAnalytics_sink_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "database-password"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable_publish')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics_sink",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"tablename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": {
+						"value": "@dataset().tablename",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics_sink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/linkedService_staging')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('linkedService_staging_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('linkedService_staging_accountKey')]"
+					}
 				}
 			},
 			"dependsOn": []
