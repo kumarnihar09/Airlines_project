@@ -104,7 +104,13 @@
 									"referenceName": "Refresh_Databricks_Notebook",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true
+								"waitOnCompletion": true,
+								"parameters": {
+									"Layer_Name": {
+										"value": "@item().layer_names_to_run",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					]
