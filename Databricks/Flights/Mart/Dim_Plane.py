@@ -15,11 +15,6 @@
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC drop table dim_plane
-
-# COMMAND ----------
-
-# MAGIC %sql
 # MAGIC CREATE TABLE IF NOT EXISTS DIM_PLANE (
 # MAGIC   tailid string,
 # MAGIC   type string,

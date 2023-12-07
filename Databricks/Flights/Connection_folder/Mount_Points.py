@@ -1,12 +1,4 @@
 # Databricks notebook source
-dbutils.secrets.listScopes()
-
-# COMMAND ----------
-
-flights-secret-scope
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC Mounting of ADLS container Using SAS token with secret scope and key vault - Source
 
@@ -34,18 +26,13 @@ if not any(mount.mountPoint == mountPoint for mount in dbutils.fs.mounts()):
 
 # COMMAND ----------
 
-# MAGIC %fs
-# MAGIC
-# MAGIC ls '/mnt/source_blob/'
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC Mounting of ADLS contianer Using Application Registration with secret scope and key vault - Sink(Raw)
 
 # COMMAND ----------
 
-https://login.microsoftonline.com/cafb6eb2-a7bc-456f-b5a2-dac8f347a291/oauth2/token
+# MAGIC %md
+# MAGIC https://login.microsoftonline.com/cafb6eb2-a7bc-456f-b5a2-dac8f347a291/oauth2/token
 
 # COMMAND ----------
 
@@ -78,16 +65,6 @@ if not any(mount.mountPoint == mountPoint for mount in dbutils.fs.mounts()):
 
 # COMMAND ----------
 
-
-
-# COMMAND ----------
-
-# MAGIC %fs
-# MAGIC
-# MAGIC ls "/mnt/raw_datalake/"
-
-# COMMAND ----------
-
 # Container name
 # Stoage account name
 # Tennant Id
@@ -117,12 +94,6 @@ if not any(mount.mountPoint == mountPoint for mount in dbutils.fs.mounts()):
 
 # COMMAND ----------
 
-# MAGIC %fs
-# MAGIC
-# MAGIC ls "/mnt/"
-
-# COMMAND ----------
-
 # Container name
 # Stoage account name
 # Tennant Id
@@ -149,9 +120,3 @@ if not any(mount.mountPoint == mountPoint for mount in dbutils.fs.mounts()):
  
 #abfss://mart@flightsadlssink.dfs.core.windows.net 
 
-
-# COMMAND ----------
-
-# MAGIC %fs
-# MAGIC
-# MAGIC ls "/mnt/"

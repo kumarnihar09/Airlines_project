@@ -14,16 +14,12 @@ df = spark.readStream.format("cloudFiles").option("cloudFiles.format",'csv')\
 
 # COMMAND ----------
 
-display(df)
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC Changing the column datatypes and writing 
 
 # COMMAND ----------
 
-dbutils.fs.rm("/dbfs/FileStore/tables/checkpointLocation/PLANE",True)
+#dbutils.fs.rm("/dbfs/FileStore/tables/checkpointLocation/PLANE",True)
 
 # COMMAND ----------
 
@@ -36,7 +32,7 @@ df_base.writeStream.trigger(once=True)\
 
 # COMMAND ----------
 
-bze of checkpoint location it is skipping the file if it comes again
+#bze of checkpoint location it is skipping the file if it comes again
 
 # COMMAND ----------
 

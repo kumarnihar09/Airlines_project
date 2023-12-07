@@ -3,12 +3,6 @@
 
 # COMMAND ----------
 
-# MAGIC %fs
-# MAGIC
-# MAGIC ls '/mnt/raw-datalake/'
-
-# COMMAND ----------
-
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import explode
 
@@ -40,7 +34,7 @@ df_final.write.format("delta").mode("overwrite").save("/mnt/cleansed_datalake/ai
 
 # COMMAND ----------
 
-dbutils.fs.rm('/mnt/cleansed_datalake/airlines',True)
+#dbutils.fs.rm('/mnt/cleansed_datalake/airlines',True)
 
 # COMMAND ----------
 

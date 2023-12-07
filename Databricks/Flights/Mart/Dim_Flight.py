@@ -25,11 +25,6 @@
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC drop table reporting_flight
-
-# COMMAND ----------
-
-# MAGIC %sql
 # MAGIC CREATE TABLE IF NOT EXISTS Reporting_Flight (
 # MAGIC   date date,
 # MAGIC   ArrDelay int,

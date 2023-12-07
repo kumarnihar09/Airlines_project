@@ -26,12 +26,7 @@
 
 # COMMAND ----------
 
-dbutils.fs.rm('/mnt/mart_datalake/DIM_CANCELLATION',True)
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC drop table dim_cancellation
+#dbutils.fs.rm('/mnt/mart_datalake/DIM_CANCELLATION',True)
 
 # COMMAND ----------
 

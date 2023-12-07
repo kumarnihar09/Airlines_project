@@ -16,10 +16,6 @@
 
 # COMMAND ----------
 
-
-
-# COMMAND ----------
-
 # MAGIC %sql
 # MAGIC select * from cleansed_flightsproject.unique_carriers;
 
@@ -27,10 +23,6 @@
 
 # MAGIC %sql
 # MAGIC DESC cleansed_flightsproject.unique_carriers
-
-# COMMAND ----------
-
-
 
 # COMMAND ----------
 

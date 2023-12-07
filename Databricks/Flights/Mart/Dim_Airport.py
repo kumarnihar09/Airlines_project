@@ -26,12 +26,7 @@
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC drop table dim_airport
-
-# COMMAND ----------
-
-dbutils.fs.rm('/mnt/mart_datalake/DIM_AIRPORT',True)
+#dbutils.fs.rm('/mnt/mart_datalake/DIM_AIRPORT',True)
 
 # COMMAND ----------
 

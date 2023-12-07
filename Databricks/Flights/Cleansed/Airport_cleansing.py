@@ -14,16 +14,12 @@ df = spark.readStream.format("cloudFiles").option("cloudFiles.format",'csv')\
 
 # COMMAND ----------
 
-display(df)
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC Changing the column datatypes and writing 
 
 # COMMAND ----------
 
-dbutils.fs.rm("/dbfs/FileStore/tables/checkpointLocation/airport",True)
+#dbutils.fs.rm("/dbfs/FileStore/tables/checkpointLocation/airport",True)
 
 # COMMAND ----------
 
@@ -34,7 +30,7 @@ df_base = df.selectExpr(
     "split(split(Description,',')[1],':')[1] as airport",
     "to_date(Date_Part,'yyyy-MM-dd') as Date_Part",
                         )
-# display(df_base)
+
 df_base.writeStream.trigger(once=True)\
     .format("delta")\
     .option("checkpointLocation","/dbfs/FileStore/tables/checkpointLocation/airport")\
@@ -42,7 +38,7 @@ df_base.writeStream.trigger(once=True)\
 
 # COMMAND ----------
 
-bze of checkpoint location it is skipping the file if it comes again
+#bze of checkpoint location it is skipping the file if it comes again
 
 # COMMAND ----------
 

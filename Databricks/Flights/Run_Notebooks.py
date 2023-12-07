@@ -8,15 +8,15 @@ Notebook_Path_Json = {
     
         "Raw": ["/Flights/Raw_sourcing/Raw_Plane"],
         "Cleansed": [
-            "/Flights/Cleansing/Airlines",
-            "/Flights/Cleansing/Airport",
-            "/Flights/Cleansing/Cancellation",
-            "/Flights/Cleansing/Flight",
-            "/Flights/Cleansing/Plane",
-            "/Flights/Cleansing/Unique_Carrier",
+            "/Flights/Cleansed/Airlines_cleansing",
+            "/Flights/Cleansed/Airport_cleansing",
+            "/Flights/Cleansed/Cancellation_cleansing",
+            "/Flights/Cleansed/Flight_cleansing",
+            "/Flights/Cleansed/Plane_cleansing",
+            "/Flights/Cleansed/Unique_Carrier_cleansing",
         ],
         "Data_Quality_Cleansed": [
-            "/Flights/Data_Quality_Notebook/Cleansing_Data_Quality"
+            "/Flights/Data_Quality/Cleansing_Data_Quality"
         ],
         "Mart": [
             "/Flights/Mart/Dim_Airlines",

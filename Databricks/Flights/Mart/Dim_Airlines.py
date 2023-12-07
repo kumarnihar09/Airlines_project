@@ -22,7 +22,7 @@
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC DESC cleansed_flightsproject.airlines
+# MAGIC DESC cleansed_flightsproject.airlines;
 
 # COMMAND ----------
 

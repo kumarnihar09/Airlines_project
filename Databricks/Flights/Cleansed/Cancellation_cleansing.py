@@ -23,7 +23,7 @@ display(df)
 
 # COMMAND ----------
 
-dbutils.fs.rm("/dbfs/FileStore/tables/checkpointLocation/cancellation",True)
+#dbutils.fs.rm("/dbfs/FileStore/tables/checkpointLocation/cancellation",True)
 
 # COMMAND ----------
 
@@ -32,7 +32,7 @@ df_base = df.selectExpr(
     "replace(Description,'\"','') as description",
     "to_date(`Date-Part`,'yyyy-MM-dd') as Date_Part"
                         )
-#display(df_base)
+
 df_base.writeStream.trigger(once=True)\
     .format("delta")\
     .option("checkpointLocation","/dbfs/FileStore/tables/checkpointLocation/cancellation")\
@@ -40,12 +40,16 @@ df_base.writeStream.trigger(once=True)\
 
 # COMMAND ----------
 
-bze of checkpoint location it is skipping the file if it comes again
+#bze of checkpoint location it is skipping the file if it comes again
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC Creation of SQL table on top of cleansing table/location to do query/manipulation
+
+# COMMAND ----------
+
+dbutils.fs.ls("/mnt/cleansed_datalake/")
 
 # COMMAND ----------
 
