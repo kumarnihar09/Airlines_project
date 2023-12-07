@@ -54,6 +54,10 @@
 			"type": "string",
 			"defaultValue": "f41346eb-0bec-4c2e-9cfa-33411dc08e36"
 		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "1125-105619-u59a71wi"
+		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://flightskey.vault.azure.net/"
@@ -418,7 +422,8 @@
 				},
 				"parameters": {
 					"Layer_Name": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "Raw"
 					}
 				},
 				"annotations": []
@@ -1192,6 +1197,35 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable_publish')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics_sink",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"tablename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": {
+						"value": "@dataset().tablename",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics_sink')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Binary1_sink')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1598,14 +1632,7 @@
 						},
 						"secretName": "databricks-token"
 					},
-					"newClusterNodeType": "Standard_DS3_v2",
-					"newClusterNumOfWorker": "1",
-					"newClusterSparkEnvVars": {
-						"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
-					},
-					"newClusterVersion": "11.3.x-scala2.12",
-					"clusterOption": "Fixed",
-					"newClusterInitScripts": []
+					"existingClusterId": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
 				}
 			},
 			"dependsOn": [
@@ -1696,21 +1723,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/RestService_source')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('RestService_source_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics_sink')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -1734,33 +1746,19 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable_publish')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/RestService_source')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSynapseAnalytics_sink",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"tablename": {
-						"type": "string"
-					}
-				},
 				"annotations": [],
-				"type": "AzureSqlDWTable",
-				"schema": [],
+				"type": "RestService",
 				"typeProperties": {
-					"schema": "dbo",
-					"table": {
-						"value": "@dataset().tablename",
-						"type": "Expression"
-					}
+					"url": "[parameters('RestService_source_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics_sink')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/linkedService_staging')]",

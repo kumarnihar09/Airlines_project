@@ -54,6 +54,10 @@
 			"type": "string",
 			"defaultValue": "f41346eb-0bec-4c2e-9cfa-33411dc08e36"
 		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "1125-105619-u59a71wi"
+		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://flightskey.vault.azure.net/"
@@ -134,6 +138,9 @@
 					},
 					"AzureDataLakeStorage_source_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('AzureDataLakeStorage_source_properties_typeProperties_servicePrincipalId')]"
+					},
+					"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
 					}
 				}
 			},
