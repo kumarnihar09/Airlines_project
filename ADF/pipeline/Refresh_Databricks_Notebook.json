@@ -31,8 +31,10 @@
 		],
 		"parameters": {
 			"Layer_Name": {
-				"type": "string",
-				"defaultValue": "Raw"
+				"type": "array",
+				"defaultValue": [
+					"Raw"
+				]
 			}
 		},
 		"annotations": []
