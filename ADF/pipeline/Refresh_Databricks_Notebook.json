@@ -13,6 +13,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": "/Flights/Run_Notebooks",
 					"baseParameters": {
@@ -30,7 +31,8 @@
 		],
 		"parameters": {
 			"Layer_Name": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "Raw"
 			}
 		},
 		"annotations": []
