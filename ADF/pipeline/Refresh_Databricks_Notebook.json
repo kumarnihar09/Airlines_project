@@ -32,9 +32,7 @@
 		"parameters": {
 			"Layer_Name": {
 				"type": "string",
-				"defaultValue": [
-					"Raw"
-				]
+				"defaultValue": "Raw"
 			}
 		},
 		"annotations": []
