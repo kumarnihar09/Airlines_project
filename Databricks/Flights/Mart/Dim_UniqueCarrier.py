@@ -26,6 +26,11 @@
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC Creating dimension table
+
+# COMMAND ----------
+
 # MAGIC %sql
 # MAGIC CREATE TABLE IF NOT EXISTS DIM_UNIQUECARRIERS (
 # MAGIC   code STRING,

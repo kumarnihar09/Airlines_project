@@ -26,6 +26,11 @@
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC Creating Dimension table
+
+# COMMAND ----------
+
 # MAGIC %sql
 # MAGIC CREATE TABLE IF NOT EXISTS DIM_AIRLINES (
 # MAGIC   iata_code STRING,

@@ -14,6 +14,11 @@
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC Creating dimension table
+
+# COMMAND ----------
+
 # MAGIC %sql
 # MAGIC CREATE TABLE IF NOT EXISTS DIM_PLANE (
 # MAGIC   tailid string,
